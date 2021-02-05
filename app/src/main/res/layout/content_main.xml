@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MainActivity"
+    tools:context=".ui.main.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <ImageView
@@ -32,22 +32,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:text="Glide - Image Loading Library by BumpTech"/>
+            android:text="@string/glide_file_name"/>
         <RadioButton
             android:id="@+id/main_radio_udacity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:text="LoadApp - current repository by Udacity"/>
+            android:text="@string/udacity_file_name"/>
         <RadioButton
             android:id="@+id/main_radio_retrofit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:text="Retrofit - Type-safe HTTP client for Android and Java by Square, Inc."/>
+            android:text="@string/retrofit_file_name"/>
     </RadioGroup>
 
-    <com.rosalynbm.LoadingButton
+    <com.rosalynbm.widget.LoadingButton
         android:id="@+id/main_download_button"
         android:layout_width="0dp"
         app:layout_constraintStart_toStartOf="parent"

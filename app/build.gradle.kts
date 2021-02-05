@@ -38,9 +38,7 @@ dependencies {
     implementation(Libs.androidxConstraint)
     implementation(Libs.googleMaterial)
     implementation(Libs.kotlinJdk8)
-   /* androidTestImplementation(Libs.androidxTestRunner)
-   testImplementation(Libs.jUnit)
-    androidTestImplementation(Libs.androidxTestEspressoCore)*/
+    implementation(Libs.timber)
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }

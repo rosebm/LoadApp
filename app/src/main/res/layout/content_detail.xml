@@ -5,7 +5,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".DetailActivity"
-    tools:showIn="@layout/activity_detail">
+    tools:context=".ui.detail.DetailActivity"
+    tools:showIn="@layout/activity_detail"
+    android:paddingTop="30dp"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp">
+
+    <TextView
+        android:id="@+id/detail_file_label"
+        android:text="@string/detail_file_label_text"
+        android:textSize="20sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="File Name"/>
+
+    <TextView
+        android:id="@+id/detail_file_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Glide - Image loading Library"/>
+
+    <TextView
+        android:id="@+id/detail_status_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/detail_status_label_text"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Status"/>
+
+    <TextView
+        android:id="@+id/detail_status_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        tools:text="Success"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintGuide_percent=".4"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintGuide_percent=".15"/>
+
+    <Button
+        android:id="@+id/detail_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="OK"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="60dp"
+        tools:text="OK"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

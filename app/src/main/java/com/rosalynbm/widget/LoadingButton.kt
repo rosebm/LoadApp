@@ -1,4 +1,4 @@
-package com.rosalynbm
+package com.rosalynbm.widget
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -6,8 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.view.View
-import android.widget.Button
+import com.rosalynbm.ButtonState
 import kotlin.properties.Delegates
 
 class LoadingButton @JvmOverloads constructor(

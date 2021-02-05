@@ -8,9 +8,6 @@ object Versions {
     const val googleMaterial = "1.0.0"
     const val gradle = "4.0.1"
     const val kotlin = "1.3.72"
+    const val timber = "4.7.1"
 
-    /* Test */
-    const val jUnit = "4.12"
-    const val androidxEspressoCore = "3.1.1"
-    const val androidxTestRunner = "1.1.1"
 }

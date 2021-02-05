@@ -1,26 +1,20 @@
-package com.rosalynbm
+package com.rosalynbm.ui.main
 
 import android.app.DownloadManager
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.database.Cursor
-import android.media.RingtoneManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
-import com.rosalynbm.MainActivity.Companion.CHANNEL_ID
+import com.rosalynbm.BuildConfig
+import com.rosalynbm.utils.NotificationUtil
+import com.rosalynbm.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity() {
@@ -31,67 +25,52 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
     private var url: String = ""
+    private var fileName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        // init timber
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+        //registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         main_download_button.setOnClickListener {
             if (url != "")
                 download(url)
             else
-                Toast.makeText(this, "Must select one option", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.main_toast_text), Toast.LENGTH_SHORT).show()
         }
 
         main_download_options.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.main_radio_glide ->
+                R.id.main_radio_glide -> {
                     url = "https://github.com/bumptech/glide"
+                    fileName = getString(R.string.glide_file_name)
+                }
 
-                R.id.main_radio_udacity ->
+                R.id.main_radio_udacity -> {
                     url = "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter"
+                    fileName = getString(R.string.udacity_file_name)
+                }
 
-                R.id.main_radio_retrofit ->
+                R.id.main_radio_retrofit -> {
                     url = "https://github.com/square/retrofit"
+                    fileName = getString(R.string.retrofit_file_name)
+                }
             }
         }
     }
 
-    private fun sendNotification(title: String?, messageBody: String?){
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
-       //ros val channelId = BuildConfig.CHANNEL_ID
-        val channelId = CHANNEL_ID
-        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-        val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_download_icon)
-            .setContentTitle(title)
-            .setContentText(messageBody)
-            .setAutoCancel(true)
-            .setSound(defaultSoundUri)
-            .setContentIntent(pendingIntent)
-
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        //Since android Oreo, notification channel is needed
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val channel = NotificationChannel(channelId, "Channel readable title", NotificationManager.IMPORTANCE_HIGH)
-            channel.setShowBadge(true)
-            notificationManager.createNotificationChannel(channel)
-        }
-        notificationManager.notify(0, notificationBuilder.build())
-    }
-
-    private val receiver = object : BroadcastReceiver() {
+    /*private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
         }
-    }
+    }*/
 
     private fun download(url: String) {
         val request =
@@ -140,7 +119,10 @@ class MainActivity : AppCompatActivity() {
                         finishDownload = true;
                         Toast.makeText(this, "Download Completed", Toast.LENGTH_SHORT).show()
 
-                        sendNotification("LoadApp", "Your file downloaded successfully")
+                        NotificationUtil(this)
+                            .sendNotification("LoadApp",
+                                    "Your file downloaded successfully",
+                                    mapOf("url" to url), mapOf( "file_name" to fileName))
                     }
                 }
             }
