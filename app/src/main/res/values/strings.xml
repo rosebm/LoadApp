@@ -4,8 +4,8 @@
     <string name="action_settings">Settings</string>
 
 
-    <string name="notification_title">Udacity: Android Kotlin Nanodegree </string>
-    <string name="notification_description">The Project 3 repository is downloaded</string>
+    <string name="notification_title">Rosalyn - LoadApp </string>
+    <string name="notification_description">Your file downloaded successfully</string>
     <string name="notification_button">See changes</string>
 
     <string name="button_name">Click me</string>

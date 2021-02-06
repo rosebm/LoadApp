@@ -10,7 +10,9 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.rosalynbm.R
-import com.rosalynbm.ui.detail.DetailActivity
+import com.rosalynbm.ui.receiver.NotificationReceiver
+import com.rosalynbm.utils.Const.FILE_NAME
+import com.rosalynbm.utils.Const.URL
 
 class NotificationUtil(private val context: Context) {
 
@@ -18,26 +20,36 @@ class NotificationUtil(private val context: Context) {
         private const val CHANNEL_ID = "LoadApp"
     }
 
-    fun sendNotification(title: String?, messageBody: String?, url: Map<String, String>,
-                         fileName: Map<String, String>) {
-        val intent = Intent(context, DetailActivity::class.java)
+    fun sendNotification(url: Map<String, String>, fileName: Map<String, String>) {
+        /*val intent = Intent(context, DetailActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra("url", url.getValue("url"))
         intent.putExtra("file_name", fileName.getValue("file_name"))
 
-        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
-        //ros val channelId = BuildConfig.CHANNEL_ID
+        val contentPendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        val channelId = BuildConfig.CHANNEL_ID*/
+
         val channelId = CHANNEL_ID
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
+        val broadCastIntent = Intent(context, NotificationReceiver::class.java)
+        broadCastIntent.putExtra(URL, url.getValue(URL))
+        broadCastIntent.putExtra(FILE_NAME, fileName.getValue(FILE_NAME))
+
+        val actionIntent = PendingIntent.getBroadcast(context, 0,
+                broadCastIntent, PendingIntent.FLAG_ONE_SHOT)
+
         val notificationBuilder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_download_icon)
-            .setContentTitle(title)
-            .setContentText(messageBody)
+                .addAction(R.drawable.ic_download_icon,
+                        context.getString(R.string.notification_button),
+                        actionIntent)
+            .setContentTitle(context.getString(R.string.notification_title))
+            .setContentText(context.getString(R.string.notification_description))
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             // Set the intent that will fire when the user taps the notification
-            .setContentIntent(pendingIntent)
+            //.setContentIntent(contentPendingIntent)
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -58,7 +70,7 @@ class NotificationUtil(private val context: Context) {
             notify(notificationId, notificationBuilder.build())
 
             // When done, update the notification one more time to remove the progress bar
-            notificationBuilder.setContentText(messageBody)
+            notificationBuilder.setContentText(context.getString(R.string.notification_description))
                 .setProgress(0,0, false)
             notificationManager.notify(notificationId, notificationBuilder.build())
         }

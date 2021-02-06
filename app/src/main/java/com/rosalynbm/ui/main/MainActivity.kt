@@ -12,6 +12,8 @@ import androidx.core.app.NotificationCompat
 import com.rosalynbm.BuildConfig
 import com.rosalynbm.utils.NotificationUtil
 import com.rosalynbm.R
+import com.rosalynbm.utils.Const.FILE_NAME
+import com.rosalynbm.utils.Const.URL
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import timber.log.Timber
@@ -117,23 +119,15 @@ class MainActivity : AppCompatActivity() {
                         // if you use aysnc task
                         // publishProgress(100);
                         finishDownload = true;
-                        Toast.makeText(this, "Download Completed", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(this, "Download Completed", Toast.LENGTH_SHORT).show()
 
                         NotificationUtil(this)
-                            .sendNotification("LoadApp",
-                                    "Your file downloaded successfully",
-                                    mapOf("url" to url), mapOf( "file_name" to fileName))
+                            .sendNotification(mapOf(URL to url), mapOf(FILE_NAME to fileName))
                     }
                 }
             }
         }
 
-    }
-
-    companion object {
-        private const val URL =
-            "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
-        private const val CHANNEL_ID = "LoadApp"
     }
 
 }

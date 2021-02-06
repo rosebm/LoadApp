@@ -1,13 +1,12 @@
 package com.rosalynbm.ui.detail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.rosalynbm.R
+import com.rosalynbm.utils.Const.FILE_NAME
 import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.content_detail.*
-import timber.log.Timber
 
 class DetailActivity : AppCompatActivity(), View.OnClickListener{
 
@@ -18,10 +17,7 @@ class DetailActivity : AppCompatActivity(), View.OnClickListener{
 
         detail_button.setOnClickListener(this)
 
-        Timber.d("extra ${intent.extras?.getString("url")}")
-        Timber.d("extra ${intent.extras?.getString("file_name")}")
-
-        detail_file_name.text = intent.extras?.getString("file_name")
+        detail_file_name.text = intent.extras?.getString(FILE_NAME)
         detail_status_name.text = "Success"
     }
 
