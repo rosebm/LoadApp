@@ -1,11 +1,13 @@
 package com.rosalynbm.ui.main
 
+import android.animation.ObjectAnimator
 import android.app.DownloadManager
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var action: NotificationCompat.Action
     private var url: String = ""
     private var fileName: String = ""
+    private lateinit var objectAnimator: ObjectAnimator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,18 +107,21 @@ class MainActivity : AppCompatActivity() {
                     DownloadManager.STATUS_PAUSED -> {}
                     DownloadManager.STATUS_PENDING -> {}
                     DownloadManager.STATUS_RUNNING -> {
+                        Log.d("ROS", "running ")
                         val total: Long = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
                         if (total >= 0) {
                             val downloaded =
                                 cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
-                            progress = ((downloaded * 100L) / total).toInt()
                             // if you use downloadmanger in async task, here you can use like this to display progress.
                             // Don't forget to do the division in long to get more digits rather than double.
-                            //  publishProgress((int) ((downloaded * 100L) / total));
+                            Log.d("ROS", "downloaded $downloaded ")
+                            progress = ((downloaded * 100L) / total).toInt()
+                            Log.d("ROS", "running progress $progress")
                         }
                     }
                     DownloadManager.STATUS_SUCCESSFUL -> {
                         progress = 100;
+                        Log.d("ROS", "completed ")
                         // if you use aysnc task
                         // publishProgress(100);
                         finishDownload = true;
@@ -123,6 +129,8 @@ class MainActivity : AppCompatActivity() {
 
                         NotificationUtil(this)
                             .sendNotification(mapOf(URL to url), mapOf(FILE_NAME to fileName))
+
+                        main_download_button.downloadCompleted()
                     }
                 }
             }

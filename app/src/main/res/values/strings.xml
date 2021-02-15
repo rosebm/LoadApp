@@ -16,6 +16,7 @@
     <string name="detail_status_label_text">Status</string>
 
     <string name="main_toast_text">Must select one option</string>
+    <string name="main_download_button">Download</string>
     <string name="glide_file_name">Glide - Image Loading Library by BumpTech</string>
     <string name="udacity_file_name">LoadApp - current repository by Udacity</string>
     <string name="retrofit_file_name">Retrofit - Type-safe HTTP client for Android and Java by Square, Inc.</string>
