@@ -21,14 +21,6 @@ class NotificationUtil(private val context: Context) {
     }
 
     fun sendNotification(url: Map<String, String>, fileName: Map<String, String>) {
-        /*val intent = Intent(context, DetailActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        intent.putExtra("url", url.getValue("url"))
-        intent.putExtra("file_name", fileName.getValue("file_name"))
-
-        val contentPendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
-        val channelId = BuildConfig.CHANNEL_ID*/
-
         val channelId = CHANNEL_ID
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
@@ -40,7 +32,7 @@ class NotificationUtil(private val context: Context) {
                 broadCastIntent, PendingIntent.FLAG_ONE_SHOT)
 
         val notificationBuilder = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_download_icon)
+            .setSmallIcon(R.drawable.ic_assistant_black_24dp)
                 .addAction(R.drawable.ic_download_icon,
                         context.getString(R.string.notification_button),
                         actionIntent)

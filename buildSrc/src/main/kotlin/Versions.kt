@@ -8,6 +8,7 @@ object Versions {
     const val googleMaterial = "1.0.0"
     const val gradle = "4.0.1"
     const val kotlin = "1.3.72"
+    const val kotlinxCoroutine = "1.3.2"
     const val timber = "4.7.1"
 
 }
