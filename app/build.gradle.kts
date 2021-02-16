@@ -38,6 +38,8 @@ dependencies {
     implementation(Libs.androidxConstraint)
     implementation(Libs.googleMaterial)
     implementation(Libs.kotlinJdk8)
+    implementation(Libs.kotlinxCoroutine)
+    implementation(Libs.kotlinxCoroutineCore)
     implementation(Libs.timber)
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
