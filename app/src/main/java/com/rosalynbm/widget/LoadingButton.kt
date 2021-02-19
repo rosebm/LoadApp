@@ -1,23 +1,16 @@
 package com.rosalynbm.widget
 
 import android.animation.AnimatorInflater
-import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
-import android.widget.Toast
-import androidx.annotation.MainThread
-import androidx.core.content.ContextCompat
 import com.rosalynbm.ButtonState
 import com.rosalynbm.R
-import kotlinx.android.synthetic.main.content_main.view.*
 import timber.log.Timber
 import kotlin.properties.Delegates
 
@@ -40,7 +33,7 @@ class LoadingButton @JvmOverloads constructor(
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
         textAlign = Paint.Align.CENTER
-        textSize = 36f
+        textSize = resources.getDimension(R.dimen.medium_text_size)
         typeface = Typeface.create("", Typeface.ITALIC)
     }
 
@@ -50,13 +43,10 @@ class LoadingButton @JvmOverloads constructor(
         valueAnimator = AnimatorInflater.loadAnimator(context, R.animator.loading) as ValueAnimator
         valueAnimator.addUpdateListener {
             progress = (it.animatedValue as Float)
-            Log.d("ROS", "init progress $progress ")
             invalidate()
 
             if (progress == 100f) {
                 buttonState = ButtonState.Completed
-
-                Toast.makeText(context, "File downloaded!", Toast.LENGTH_LONG)
             }
         }
 
@@ -78,15 +68,12 @@ class LoadingButton @JvmOverloads constructor(
     override fun performClick(): Boolean {
         super.performClick()
 
-        Log.d("ROS", "cliiiick")
-
         when (buttonState) {
             ButtonState.Completed -> {
                 buttonState = ButtonState.Loading
             }
-
             else -> {
-                Timber.d("ROS No action")
+                Timber.d("No action")
             }
         }
         valueAnimator.start()
@@ -129,7 +116,7 @@ class LoadingButton @JvmOverloads constructor(
             }
             else -> {
                 paint.color = Color.WHITE
-                paint.textSize = 60F
+                paint.textSize = resources.getDimension(R.dimen.large_text_size)
                 buttonText = resources.getString(R.string.main_download_button)
                 canvas?.drawText(buttonText, 450F, 110F, paint)
             }
