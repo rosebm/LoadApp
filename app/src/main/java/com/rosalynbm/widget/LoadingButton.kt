@@ -1,33 +1,68 @@
 package com.rosalynbm.widget
 
+import android.animation.AnimatorInflater
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.util.AttributeSet
+import android.view.View
 import com.rosalynbm.ButtonState
+import com.rosalynbm.R
+import timber.log.Timber
 import kotlin.properties.Delegates
 
 class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : androidx.appcompat.widget.AppCompatButton(context, attrs, defStyleAttr) {
-//ros ) : View(context, attrs, defStyleAttr) {
+ ) : View(context, attrs, defStyleAttr) {
+
     private var widthSize = 0
     private var heightSize = 0
+    private var valueAnimator = ValueAnimator()
+    private val ovalSpace = RectF()
+    private var progress = 0f
+    private var buttonText: String = ""
+    private var bgColor: Int = Color.BLACK
+    private var textColor: Int = Color.BLACK
 
-    private val valueAnimator = ValueAnimator()
-    private val paint = Paint()
-
-    private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
-
+    private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) {
+        p, old, new ->
     }
 
+    companion object {
+        const val TOTAL_PROGRESS = 100f
+        const val PERCENTAGE_DIVIDER = 100
+        const val ARC_FULL_ROTATION_DEGREE = 360
+    }
 
     init {
+        isClickable = true
+
+        valueAnimator = AnimatorInflater.loadAnimator(context, R.animator.loading) as ValueAnimator
+        valueAnimator.addUpdateListener {
+            progress = (it.animatedValue as Float)
+            invalidate()
+
+            if (progress == TOTAL_PROGRESS) {
+                buttonState = ButtonState.Completed
+            }
+        }
 
     }
 
+    override fun performClick(): Boolean {
+        super.performClick()
+
+        when (buttonState) {
+            ButtonState.Completed -> {
+                buttonState = ButtonState.Loading
+            }
+            else -> {
+                Timber.d("No action")
+            }
+        }
+        valueAnimator.start()
+        return true
+    }
 
     //Animate, Measure, Layout, Draw -> cycle
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -40,6 +75,7 @@ class LoadingButton @JvmOverloads constructor(
         )
         widthSize = w
         heightSize = h
+
         setMeasuredDimension(w, h)
     }
 
@@ -47,14 +83,101 @@ class LoadingButton @JvmOverloads constructor(
         super.onDraw(canvas)
 
         //set the color depending on the progress
-        paint.color = Color.YELLOW
-        paint.strokeWidth = 2F
-        paint.textAlign = Paint.Align.CENTER
-        canvas?.drawRect(20F,30F,1000F,150F, paint)
+        buttonTextPaint.color = resources.getColor(R.color.colorPrimary)
+        buttonTextPaint.strokeWidth = 2F
+        buttonTextPaint.textAlign = Paint.Align.CENTER
+        canvas?.drawRect(20F,30F, width.toFloat(), height.toFloat(), buttonTextPaint)
 
-        paint.color = Color.BLACK
-        paint.textSize = 60F
-        canvas?.drawText("Download", 450F, 110F, paint)
+        when (buttonState) {
+            ButtonState.Loading -> {
+                buttonTextPaint.color = resources.getColor(R.color.colorPrimaryDark)
+                val widthProgressed = (progress / 100) * width
+                canvas?.drawRect(20F,30F, widthProgressed.toFloat(), height.toFloat(), buttonTextPaint)
+
+                buttonText = resources.getString(R.string.button_loading)
+                buttonTextPaint.color = Color.WHITE
+                canvas?.drawText(buttonText, 450F, 110F, buttonTextPaint)
+            }
+            else -> {
+                buttonTextPaint.color = Color.WHITE
+                buttonTextPaint.textSize = resources.getDimension(R.dimen.large_text_size)
+                buttonText = resources.getString(R.string.main_download_button)
+
+                // Centering based on the height occupied by the text
+                val bounds = Rect()
+                buttonTextPaint.getTextBounds(buttonText, 0, buttonText.length, bounds)
+                val verticalCenter = (height).minus((bounds.height() / 2)).toFloat()
+
+                canvas?.drawText(buttonText, (width / 2).toFloat() , verticalCenter, buttonTextPaint)
+            }
+        }
+
+        setSpace()
+        canvas?.let {
+            it.drawArc(ovalSpace, 0f, 360f, false, mainCirclePaint)
+            drawBackgroundArc(it)
+            drawInnerArc(it)
+        }
+    }
+
+    private val buttonTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        textAlign = Paint.Align.CENTER
+        textSize = resources.getDimension(R.dimen.medium_text_size)
+        typeface = Typeface.create("", Typeface.ITALIC)
+    }
+
+    private fun setSpace() {
+        val horizontalCenter = (width - width.div(6)).toFloat()
+        val verticalCenter = (height.div(2)).toFloat()
+        val ovalSize = 40
+        // Bounds of oval used to define the shape and size of the arc
+        ovalSpace.set(
+                horizontalCenter - ovalSize,
+                verticalCenter - ovalSize,
+                horizontalCenter + ovalSize,
+                verticalCenter + ovalSize
+        )
+    }
+
+    private fun drawBackgroundArc(it: Canvas) {
+        it.drawArc(ovalSpace, 0f, 360f, false, mainCirclePaint)
+    }
+
+    /**
+     * Draws the progression
+     */
+    private fun drawInnerArc(canvas: Canvas) {
+        val percentageToFill = getCurrentPercentageToFill()
+        canvas.drawArc(ovalSpace, 270f, percentageToFill, true, fillArcPaint)
+    }
+
+    private val mainCircleColor = context.resources?.getColor(R.color.colorAccent, null) ?: Color.GRAY
+    private val fillArcColor = resources.getColor(R.color.colorAccent, null)
+
+    private val mainCirclePaint = Paint().apply {
+        style = Paint.Style.STROKE
+        // To ensure the drawing has smooth edge
+        isAntiAlias = true
+        color = mainCircleColor
+        strokeWidth = 10f
+
+    }
+
+    private val fillArcPaint = Paint().apply {
+        style = Paint.Style.FILL_AND_STROKE
+        isAntiAlias = true
+        color = fillArcColor
+        strokeWidth = 10f
+        // Makes the stroke edge round
+        strokeCap = Paint.Cap.ROUND
+    }
+
+    private fun getCurrentPercentageToFill() = (ARC_FULL_ROTATION_DEGREE * (progress / PERCENTAGE_DIVIDER))
+
+    fun downloadCompleted() {
+        valueAnimator.cancel()
+        requestLayout()
     }
 
 }

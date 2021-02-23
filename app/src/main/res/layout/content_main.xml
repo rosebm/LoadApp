@@ -13,7 +13,9 @@
         android:id="@+id/main_image"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/black_dog"
+        android:src="@drawable/ic_download_cloud"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -22,8 +24,8 @@
         android:id="@+id/main_download_options"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:layout_marginTop="25dp"
+        android:paddingLeft="@dimen/options_padding"
+        android:layout_marginTop="@dimen/options_margin"
         app:layout_constraintTop_toBottomOf="@+id/main_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -52,8 +54,8 @@
         android:layout_width="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_height="60dp"
-        android:layout_margin="20dp"
+        android:layout_height="@dimen/download_button_height"
+        android:layout_margin="@dimen/download_button_margin"
         app:layout_constraintTop_toBottomOf="@+id/main_download_options"
         app:layout_constraintBottom_toBottomOf="parent" />
 
