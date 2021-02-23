@@ -44,8 +44,9 @@ class MainActivity : AppCompatActivity() {
         //registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         main_download_button.setOnClickListener {
-            if (url != "")
+            if (url != "") {
                 download(url)
+            }
             else
                 Toast.makeText(this, getString(R.string.main_toast_text), Toast.LENGTH_SHORT).show()
         }

@@ -42,5 +42,9 @@ dependencies {
     implementation(Libs.kotlinxCoroutineCore)
     implementation(Libs.timber)
 
+    testImplementation(Libs.junit)
+    androidTestImplementation(Libs.androidxJunit)
+    androidTestImplementation(Libs.androidxEspressoCore)
+
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }

@@ -11,4 +11,7 @@ object Versions {
     const val kotlinxCoroutine = "1.3.6"
     const val timber = "4.7.1"
 
+    const val junit_version = "4.13.1"
+    const val androidxJunit = "1.1.2"
+    const val androidxEspressoCore = "3.3.0"
 }

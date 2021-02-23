@@ -11,4 +11,8 @@ object Libs {
     const val kotlinxCoroutineCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.kotlinxCoroutine}"
     const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
 
+    const val junit = "junit:junit:${Versions.junit_version}"
+    const val androidxJunit = "androidx.test.ext:junit:${Versions.androidxJunit}"
+    const val androidxEspressoCore = "androidx.test.espresso:espresso-core:${Versions.androidxEspressoCore}"
+
 }
