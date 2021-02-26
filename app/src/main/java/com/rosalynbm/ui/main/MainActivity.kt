@@ -7,21 +7,20 @@ import android.app.PendingIntent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import com.rosalynbm.BuildConfig
-import com.rosalynbm.utils.NotificationUtil
 import com.rosalynbm.R
 import com.rosalynbm.utils.Const.FILE_NAME
 import com.rosalynbm.utils.Const.URL
+import com.rosalynbm.utils.NotificationUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import timber.log.Timber
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), LoadingButtonListener {
 
     private var downloadID: Long = 0
 
@@ -43,9 +42,10 @@ class MainActivity : AppCompatActivity() {
         }
         //registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
+        main_download_button.setLoadingButtonListener(this)
         main_download_button.setOnClickListener {
             if (url != "") {
-                download(url)
+                main_download_button.startAnimation()
             }
             else
                 Toast.makeText(this, getString(R.string.main_toast_text), Toast.LENGTH_SHORT).show()
@@ -108,24 +108,19 @@ class MainActivity : AppCompatActivity() {
                     DownloadManager.STATUS_PAUSED -> {}
                     DownloadManager.STATUS_PENDING -> {}
                     DownloadManager.STATUS_RUNNING -> {
-                        Log.d("ROS", "running ")
-                        val total: Long = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
-                        if (total >= 0) {
-                            val downloaded =
-                                cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
-                            // if you use downloadmanger in async task, here you can use like this to display progress.
-                            // Don't forget to do the division in long to get more digits rather than double.
-                            Log.d("ROS", "downloaded $downloaded ")
-                            progress = ((downloaded * 100L) / total).toInt()
-                            Log.d("ROS", "running progress $progress")
+                        val byteTotal: Double = cursor.getDouble(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
+
+                        if (byteTotal >= 0) {
+                            val bytesDownloaded =
+                                cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+                            Timber.d("ROS downloaded $bytesDownloaded ")
+                            progress = ((bytesDownloaded * 100L) / byteTotal).toInt()
                         }
                     }
                     DownloadManager.STATUS_SUCCESSFUL -> {
-                        progress = 100;
-                        Log.d("ROS", "completed ")
+                        Timber.d("ROS completed ")
                         // if you use aysnc task
-                        // publishProgress(100);
-                        finishDownload = true;
+                        finishDownload = true
                         //Toast.makeText(this, "Download Completed", Toast.LENGTH_SHORT).show()
 
                         NotificationUtil(this)
@@ -139,4 +134,12 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun finished() {
+        download(url)
+    }
+
+}
+
+interface LoadingButtonListener {
+    fun finished()
 }
