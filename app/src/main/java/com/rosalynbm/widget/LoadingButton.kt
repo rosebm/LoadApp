@@ -8,12 +8,13 @@ import android.util.AttributeSet
 import android.view.View
 import com.rosalynbm.ButtonState
 import com.rosalynbm.R
+import com.rosalynbm.ui.main.LoadingButtonListener
 import timber.log.Timber
 import kotlin.properties.Delegates
 
 class LoadingButton @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
- ) : View(context, attrs, defStyleAttr) {
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
 
     private var widthSize = 0
     private var heightSize = 0
@@ -34,6 +35,8 @@ class LoadingButton @JvmOverloads constructor(
         const val ARC_FULL_ROTATION_DEGREE = 360
     }
 
+
+
     init {
         isClickable = true
 
@@ -43,10 +46,20 @@ class LoadingButton @JvmOverloads constructor(
             invalidate()
 
             if (progress == TOTAL_PROGRESS) {
+                listener.finished()
                 buttonState = ButtonState.Completed
             }
         }
 
+    }
+
+    fun setProgress(value: Int) {
+        progress = value as Float
+        invalidate()
+
+        if (progress == TOTAL_PROGRESS) {
+            buttonState = ButtonState.Completed
+        }
     }
 
     override fun performClick(): Boolean {
@@ -60,8 +73,11 @@ class LoadingButton @JvmOverloads constructor(
                 Timber.d("No action")
             }
         }
-        valueAnimator.start()
         return true
+    }
+
+    fun startAnimation() {
+        valueAnimator.start()
     }
 
     //Animate, Measure, Layout, Draw -> cycle
@@ -69,9 +85,9 @@ class LoadingButton @JvmOverloads constructor(
         val minw: Int = paddingLeft + paddingRight + suggestedMinimumWidth
         val w: Int = resolveSizeAndState(minw, widthMeasureSpec, 1)
         val h: Int = resolveSizeAndState(
-            MeasureSpec.getSize(w),
-            heightMeasureSpec,
-            0
+                MeasureSpec.getSize(w),
+                heightMeasureSpec,
+                0
         )
         widthSize = w
         heightSize = h
@@ -179,5 +195,11 @@ class LoadingButton @JvmOverloads constructor(
         valueAnimator.cancel()
         requestLayout()
     }
+
+    fun setLoadingButtonListener(listener: LoadingButtonListener) {
+        this.listener = listener
+    }
+
+    lateinit var listener: LoadingButtonListener
 
 }
