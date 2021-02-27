@@ -14,7 +14,7 @@ class NotificationReceiver: BroadcastReceiver() {
         val bundle = intent?.extras
 
         val intent = Intent(context, DetailActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.putExtra(URL, bundle?.getString(URL))
         intent.putExtra(FILE_NAME, bundle?.getString(FILE_NAME))
         context?.startActivity(intent)
