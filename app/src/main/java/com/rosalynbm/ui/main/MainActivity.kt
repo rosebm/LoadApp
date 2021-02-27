@@ -7,6 +7,8 @@ import android.app.PendingIntent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
@@ -19,8 +21,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import timber.log.Timber
 
-
-class MainActivity : AppCompatActivity(), LoadingButtonListener {
+class MainActivity : AppCompatActivity() {
 
     private var downloadID: Long = 0
 
@@ -42,16 +43,19 @@ class MainActivity : AppCompatActivity(), LoadingButtonListener {
         }
         //registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
-        main_download_button.setLoadingButtonListener(this)
         main_download_button.setOnClickListener {
             if (url != "") {
                 main_download_button.startAnimation()
+                download(url)
             }
             else
                 Toast.makeText(this, getString(R.string.main_toast_text), Toast.LENGTH_SHORT).show()
         }
 
         main_download_options.setOnCheckedChangeListener { _, checkedId ->
+
+            main_download_button.setButtonInitialState()
+
             when (checkedId) {
                 R.id.main_radio_glide -> {
                     url = "https://github.com/bumptech/glide"
@@ -121,25 +125,20 @@ class MainActivity : AppCompatActivity(), LoadingButtonListener {
                         Timber.d("ROS completed ")
                         // if you use aysnc task
                         finishDownload = true
-                        //Toast.makeText(this, "Download Completed", Toast.LENGTH_SHORT).show()
 
                         NotificationUtil(this)
                             .sendNotification(mapOf(URL to url), mapOf(FILE_NAME to fileName))
 
-                        main_download_button.downloadCompleted()
+                        // Delay to allow the animation complete, since the download time for
+                        // the file is too short.
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            main_download_button.downloadCompleted()
+                        }, 1000)
                     }
                 }
             }
         }
-
-    }
-
-    override fun finished() {
-        download(url)
     }
 
 }
 
-interface LoadingButtonListener {
-    fun finished()
-}

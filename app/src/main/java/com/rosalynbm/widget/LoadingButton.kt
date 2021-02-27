@@ -8,7 +8,6 @@ import android.util.AttributeSet
 import android.view.View
 import com.rosalynbm.ButtonState
 import com.rosalynbm.R
-import com.rosalynbm.ui.main.LoadingButtonListener
 import timber.log.Timber
 import kotlin.properties.Delegates
 
@@ -25,8 +24,7 @@ class LoadingButton @JvmOverloads constructor(
     private var bgColor: Int = Color.BLACK
     private var textColor: Int = Color.BLACK
 
-    private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) {
-        p, old, new ->
+    private var buttonState: ButtonState by Delegates.observable(ButtonState.COMPLETED) { p, old, new ->
     }
 
     companion object {
@@ -35,22 +33,29 @@ class LoadingButton @JvmOverloads constructor(
         const val ARC_FULL_ROTATION_DEGREE = 360
     }
 
-
-
     init {
         isClickable = true
 
         valueAnimator = AnimatorInflater.loadAnimator(context, R.animator.loading) as ValueAnimator
+        valueAnimator.repeatCount = ValueAnimator.INFINITE
+        valueAnimator.repeatMode = ValueAnimator.RESTART
         valueAnimator.addUpdateListener {
             progress = (it.animatedValue as Float)
             invalidate()
-
-            if (progress == TOTAL_PROGRESS) {
-                listener.finished()
-                buttonState = ButtonState.Completed
-            }
         }
 
+        val attr = context.theme.obtainStyledAttributes(
+                attrs,
+                R.styleable.LoadingButton,
+                0,
+                0)
+
+        with(attr) {
+            bgColor = getColor(R.styleable.LoadingButton_backgroundColor, bgColor)
+            textColor = getColor(R.styleable.LoadingButton_textColor, textColor)
+        }
+
+        attr.recycle()
     }
 
     fun setProgress(value: Int) {
@@ -58,7 +63,7 @@ class LoadingButton @JvmOverloads constructor(
         invalidate()
 
         if (progress == TOTAL_PROGRESS) {
-            buttonState = ButtonState.Completed
+            buttonState = ButtonState.COMPLETED
         }
     }
 
@@ -66,8 +71,8 @@ class LoadingButton @JvmOverloads constructor(
         super.performClick()
 
         when (buttonState) {
-            ButtonState.Completed -> {
-                buttonState = ButtonState.Loading
+            ButtonState.COMPLETED -> {
+                buttonState = ButtonState.LOADING
             }
             else -> {
                 Timber.d("No action")
@@ -102,13 +107,13 @@ class LoadingButton @JvmOverloads constructor(
         buttonTextPaint.color = resources.getColor(R.color.colorPrimary)
         buttonTextPaint.strokeWidth = 2F
         buttonTextPaint.textAlign = Paint.Align.CENTER
-        canvas?.drawRect(20F,30F, width.toFloat(), height.toFloat(), buttonTextPaint)
+        canvas?.drawRect(20F, 30F, width.toFloat(), height.toFloat(), buttonTextPaint)
 
         when (buttonState) {
-            ButtonState.Loading -> {
+            ButtonState.LOADING -> {
                 buttonTextPaint.color = resources.getColor(R.color.colorPrimaryDark)
                 val widthProgressed = (progress / 100) * width
-                canvas?.drawRect(20F,30F, widthProgressed.toFloat(), height.toFloat(), buttonTextPaint)
+                canvas?.drawRect(20F, 30F, widthProgressed.toFloat(), height.toFloat(), buttonTextPaint)
 
                 buttonText = resources.getString(R.string.button_loading)
                 buttonTextPaint.color = Color.WHITE
@@ -124,7 +129,7 @@ class LoadingButton @JvmOverloads constructor(
                 buttonTextPaint.getTextBounds(buttonText, 0, buttonText.length, bounds)
                 val verticalCenter = (height).minus((bounds.height() / 2)).toFloat()
 
-                canvas?.drawText(buttonText, (width / 2).toFloat() , verticalCenter, buttonTextPaint)
+                canvas?.drawText(buttonText, (width / 2).toFloat(), verticalCenter, buttonTextPaint)
             }
         }
 
@@ -168,7 +173,8 @@ class LoadingButton @JvmOverloads constructor(
         canvas.drawArc(ovalSpace, 270f, percentageToFill, true, fillArcPaint)
     }
 
-    private val mainCircleColor = context.resources?.getColor(R.color.colorAccent, null) ?: Color.GRAY
+    private val mainCircleColor = context.resources?.getColor(R.color.colorAccent, null)
+            ?: Color.GRAY
     private val fillArcColor = resources.getColor(R.color.colorAccent, null)
 
     private val mainCirclePaint = Paint().apply {
@@ -189,17 +195,17 @@ class LoadingButton @JvmOverloads constructor(
         strokeCap = Paint.Cap.ROUND
     }
 
-    private fun getCurrentPercentageToFill() = (ARC_FULL_ROTATION_DEGREE * (progress / PERCENTAGE_DIVIDER))
+    private fun getCurrentPercentageToFill() =
+            (ARC_FULL_ROTATION_DEGREE * (progress / PERCENTAGE_DIVIDER))
 
     fun downloadCompleted() {
         valueAnimator.cancel()
         requestLayout()
     }
 
-    fun setLoadingButtonListener(listener: LoadingButtonListener) {
-        this.listener = listener
+    fun setButtonInitialState() {
+        buttonState = ButtonState.COMPLETED
+        invalidate()
     }
-
-    lateinit var listener: LoadingButtonListener
 
 }

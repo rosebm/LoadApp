@@ -1,62 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.main.MainActivity"
-    tools:showIn="@layout/activity_main">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/main_image"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_download_cloud"
-        android:scaleType="fitXY"
-        android:adjustViewBounds="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        tools:context=".ui.main.MainActivity"
+        tools:showIn="@layout/activity_main">
 
-    <RadioGroup
-        android:id="@+id/main_download_options"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/options_padding"
-        android:layout_marginTop="@dimen/options_margin"
-        app:layout_constraintTop_toBottomOf="@+id/main_image"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-        <RadioButton
-            android:id="@+id/main_radio_glide"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/main_image"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:checked="false"
-            android:text="@string/glide_file_name"/>
-        <RadioButton
-            android:id="@+id/main_radio_udacity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:text="@string/udacity_file_name"/>
-        <RadioButton
-            android:id="@+id/main_radio_retrofit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:text="@string/retrofit_file_name"/>
-    </RadioGroup>
+            android:src="@drawable/ic_download_cloud"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-    <com.rosalynbm.widget.LoadingButton
-        android:id="@+id/main_download_button"
-        android:layout_width="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_height="@dimen/download_button_height"
-        android:layout_margin="@dimen/download_button_margin"
-        app:layout_constraintTop_toBottomOf="@+id/main_download_options"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        <RadioGroup
+            android:id="@+id/main_download_options"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/options_padding"
+            android:layout_marginTop="@dimen/options_margin"
+            app:layout_constraintTop_toBottomOf="@+id/main_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <RadioButton
+                android:id="@+id/main_radio_glide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/glide_file_name"/>
+            <RadioButton
+                android:id="@+id/main_radio_udacity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/udacity_file_name"/>
+            <RadioButton
+                android:id="@+id/main_radio_retrofit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/retrofit_file_name"/>
+        </RadioGroup>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.rosalynbm.widget.LoadingButton
+            android:id="@+id/main_download_button"
+            android:layout_width="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="@dimen/download_button_height"
+            android:layout_margin="@dimen/download_button_margin"
+            app:textColor="@color/white"
+            app:backgroundColor="@color/colorPrimary"
+            app:layout_constraintTop_toBottomOf="@+id/main_download_options"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
